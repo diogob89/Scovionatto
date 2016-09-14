@@ -5,21 +5,24 @@
  */
 package scovionatto;
 
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
-import  org.apache.poi.hssf.usermodel.HSSFSheet;
-import  org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import  org.apache.poi.hssf.usermodel.HSSFRow;
-import  org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.ss.usermodel.Workbook;
+//import  org.apache.poi.hssf.usermodel.HSSFSheet;
+//import  org.apache.poi.hssf.usermodel.HSSFWorkbook;
+//import  org.apache.poi.hssf.usermodel.HSSFRow;
+//import  org.apache.poi.hssf.usermodel.HSSFCell;
+//import org.apache.poi.ss.usermodel.Workbook;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -157,32 +160,46 @@ public class TelaInicial extends javax.swing.JFrame {
     
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void jButton3ActionPerformed (java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        
         String valor1 = JOptionPane.showInputDialog("Número de jogadores do campeonato:");
         int valor1int = Integer.parseInt(valor1);
         
         if (valor1int <= 9) {
       
         String[] times = new String[valor1int];
+        String[] times2 = new String[valor1int];
        
+        String mostraParticipante = "";
         
         for (int i = 0; i<valor1int; i++) {
             String valor2 = JOptionPane.showInputDialog("Nome do participante:");
             times [i] = valor2;
+            //Trecho para exibir os nomes dos participantes numa tela separada
+            String mParticipante = String.format ("Participante: %s\n",times[i]);
+            mostraParticipante = mostraParticipante + mParticipante;
             
         }
         
-        List<String> selecoes = new ArrayList<String>();  
-        selecoes.add("Real Madrid");
-        selecoes.add("Barcelona");
-        selecoes.add("Bayern");
-        selecoes.add("Juventus");
-        selecoes.add("Alemanha");
-        //selecoes.add("Brasil");
-        //selecoes.add("Chelsea");
-        selecoes.add("Espanha");
-        selecoes.add("Argentina");
+        //Exibe os nomes dos participantes na tela separada
+        JOptionPane.showMessageDialog(null, mostraParticipante);
+        
+        //inicio da construcao com vetor 
+        for (int i = 0; i<valor1int; i++) {
+            String valor3 = JOptionPane.showInputDialog("Nome do time:");
+            times2 [i] = valor3;
+            
+        }       
+        
+        List<String> selecoes = new ArrayList<>();
+        
+        for (int i = 0; i<valor1int; i++) {
+        
+        selecoes.add(times2[i]);
+     
+        }
+        
         
 //Embaralhamos as selecoes:  
 Collections.shuffle(selecoes);  
@@ -204,78 +221,52 @@ for (int i = 0; i < valor1int; i++) {
         
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            // TODO add your handling code here:
-            
-            List<String> clubes = new ArrayList<String>();
-            
-            String valor1 = JOptionPane.showInputDialog("Número de jogadores do campeonato:");
-            
-            String resultado = "";
-            
-            int valor1int = Integer.parseInt(valor1);
-            
-            String filename = "C:/Users/Diogo/Desktop/Scovionatto/NewExcelFile.xls" ;
-            
-            HSSFWorkbook workbook = new HSSFWorkbook();
-            
-            HSSFSheet sheet =  workbook.createSheet("Scovionatto");
-            
-            for (int i = 0; i<valor1int; i++) {
-                String clube1 = JOptionPane.showInputDialog("Nome do participante:");
-                clubes.add(clube1);
-            }
-            
-            
-            if (clubes.size() % 2 == 1) {
-                clubes.add(0, "");
-            }
-            
-            int t = clubes.size();
-            int m = clubes.size() / 2;
-            String[] rodada = new String[valor1int];
-            
-            
-            for (int i = 0; i < t - 1; i++) {
-                
-                HSSFRow row = sheet.createRow((short)i);
-                row.createCell(0).setCellValue((i+1)+"a rodada: ");
-                
-                String mRodada = String.format("%sa rodada:",(i+1));
-                rodada [i] = mRodada;
-                for (int j = 0; j < m; j++) {
-                    //Clube está de fora nessa rodada?
-                    if (clubes.get(j).isEmpty())
-                        continue;
-                    
-                    //Teste para ajustar o mando de campo
-                    if (j % 2 == 1 || i % 2 == 1 && j == 0)  {
-                        row.createCell(j+1).setCellValue(clubes.get(t - j - 1) + " x " + clubes.get(j) + "   ");
-                        String mClube1 = String.format(" %s x %s \n",clubes.get(t - j - 1),clubes.get(j));
-                        String mensagemTotalrodada = String.format ("%s %s",mRodada,mClube1);
-                        resultado = resultado + mensagemTotalrodada + "";
-                    }
-                    
-                    else  {
-                        row.createCell(j+1).setCellValue(clubes.get(j) + " x " + clubes.get(t - j - 1) + "   ");
-                        String mClube1 = String.format(" %s x %s \n",clubes.get(j),clubes.get(t - j - 1));
-                        String mensagemTotalrodada = String.format ("%s %s",mRodada,mClube1);
-                        resultado = resultado + mensagemTotalrodada + "";
-                    }
-                }
-                
-                //Gira os clubes no sentido horário, mantendo o primeiro no lugar
-                clubes.add(1, clubes.remove(clubes.size()-1));
-            }  
-            
-            FileOutputStream fileOut = new FileOutputStream(filename);
-            workbook.write(fileOut);
-            fileOut.close();
-            JOptionPane.showMessageDialog(null, resultado);
-        } catch (IOException ex) {
-            Logger.getLogger(TelaInicial.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {List<String> clubes = new ArrayList<String>();
+    String valor1 = JOptionPane.showInputDialog("Número de jogadores do campeonato:");
+    String resultado = "";
+    int valor1int = Integer.parseInt(valor1);
+    for (int i = 0; i<valor1int; i++) {
+        String clube1 = JOptionPane.showInputDialog("Nome do participante:");
+        clubes.add(clube1);
+    }
+    if (clubes.size() % 2 == 1) {
+        clubes.add(0, "");
+    }
+    int t = clubes.size();
+    int m = clubes.size() / 2;
+    String[] rodada = new String[valor1int];
+    for (int i = 0; i < t - 1; i++) {
+        
+//                HSSFRow row = sheet.createRow((short)i);
+//                row.createCell(0).setCellValue((i+1)+"a rodada: ");
+
+String mRodada = String.format("%sa rodada:",(i+1));
+rodada [i] = mRodada;
+for (int j = 0; j < m; j++) {
+    //Clube está de fora nessa rodada?
+    if (clubes.get(j).isEmpty())
+        continue;
+    
+    //Teste para ajustar o mando de campo
+    if (j % 2 == 1 || i % 2 == 1 && j == 0)  {
+//                        row.createCell(j+1).setCellValue(clubes.get(t - j - 1) + " x " + clubes.get(j) + "   ");
+String mClube1 = String.format(" %s x %s \n",clubes.get(t - j - 1),clubes.get(j));
+String mensagemTotalrodada = String.format ("%s %s",mRodada,mClube1);
+resultado = resultado + mensagemTotalrodada + "";
+    }
+    
+    else  {
+//                        row.createCell(j+1).setCellValue(clubes.get(j) + " x " + clubes.get(t - j - 1) + "   ");
+String mClube1 = String.format(" %s x %s \n",clubes.get(j),clubes.get(t - j - 1));
+String mensagemTotalrodada = String.format ("%s %s",mRodada,mClube1);
+resultado = resultado + mensagemTotalrodada + "";
+    }
+}
+
+//Gira os clubes no sentido horário, mantendo o primeiro no lugar
+clubes.add(1, clubes.remove(clubes.size()-1));
+    }
+    JOptionPane.showMessageDialog(null, resultado);
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
